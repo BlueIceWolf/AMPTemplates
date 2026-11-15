@@ -1,0 +1,15 @@
+[
+  {
+    "UpdateStageName": "Offiziellen GitHub-Runner herunterladen",
+    "UpdateSourcePlatform": "Linux",
+    "UpdateSource": "GithubRelease",
+    "UpdateSourceArgs": "actions/runner",
+    "UpdateSourceData": "actions-runner-linux-x64-2.338.2.tar.gz",
+    "UpdateSourceVersion": "v2.338.2",
+    "UpdateSourceTarget": "{{$FullBaseDir}}",
+    "UnzipUpdateSource": true,
+    "OverwriteExistingFiles": true,
+    "DeleteAfterExtract": true,
+    "SkipOnFailure": false
+  }
+]
