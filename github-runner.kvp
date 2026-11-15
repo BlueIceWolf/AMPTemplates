@@ -1,5 +1,5 @@
 Meta.DisplayName=GitHub Actions Runner
-Meta.Description=Eigener GitHub-Runner für Builds und Automationen. Die Anmeldung bei GitHub erfolgt einmalig per SSH.
+Meta.Description=Self-hosted GitHub Actions runner. Configure GitHub access and register directly from AMP.
 Meta.OS=Linux
 Meta.AarchSupport=Native
 Meta.Arch=x86_64
