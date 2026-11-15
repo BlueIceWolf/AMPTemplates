@@ -1,1 +1,54 @@
-[]
+[
+  {
+    "DisplayName": "GitHub repository or organization URL",
+    "Category": "GitHub Runner:github:1",
+    "Subcategory": "Connection:link:1",
+    "Description": "The GitHub repository or organization that will receive this runner. For example: https://github.com/OWNER/REPO",
+    "Keywords": "github,repository,organization,url",
+    "FieldName": "RunnerURL",
+    "InputType": "text",
+    "ParamFieldName": "RunnerURL",
+    "DefaultValue": "",
+    "Placeholder": "https://github.com/OWNER/REPOSITORY",
+    "Required": true,
+    "EnumValues": {}
+  },
+  {
+    "DisplayName": "Registration token",
+    "Category": "GitHub Runner:github:1",
+    "Subcategory": "Connection:link:1",
+    "Description": "Temporary runner registration token from GitHub → Settings → Actions → Runners → New self-hosted runner. Save the settings and click Update to register. This token is not a personal access token.",
+    "Keywords": "registration,token",
+    "FieldName": "RunnerToken",
+    "InputType": "Password",
+    "ParamFieldName": "RunnerToken",
+    "DefaultValue": "",
+    "Required": true,
+    "EnumValues": {}
+  },
+  {
+    "DisplayName": "Runner name",
+    "Category": "GitHub Runner:github:1",
+    "Subcategory": "Runner:settings:2",
+    "Description": "The name shown in GitHub Actions. Use a unique name for every AMP instance.",
+    "Keywords": "name,runner",
+    "FieldName": "RunnerName",
+    "InputType": "text",
+    "ParamFieldName": "RunnerName",
+    "DefaultValue": "amp-runner",
+    "Required": true,
+    "EnumValues": {}
+  },
+  {
+    "DisplayName": "Additional labels",
+    "Category": "GitHub Runner:github:1",
+    "Subcategory": "Runner:settings:2",
+    "Description": "Optional comma-separated labels for workflow selection, for example amp,debian12. Default labels like self-hosted and Linux are added by GitHub.",
+    "Keywords": "labels,runner",
+    "FieldName": "RunnerLabels",
+    "InputType": "text",
+    "ParamFieldName": "RunnerLabels",
+    "DefaultValue": "amp,debian12",
+    "EnumValues": {}
+  }
+]
