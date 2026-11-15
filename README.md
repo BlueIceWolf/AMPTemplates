@@ -1,47 +1,56 @@
-# GitHub Actions Runner für AMP
+# AMP Templates
 
-Ich nutze dieses Repository, um einen eigenen GitHub Actions Runner direkt über **CubeCoders AMP** zu verwalten. Der Runner übernimmt Builds und andere GitHub-Actions-Aufgaben auf meinem eigenen Server.
+Custom application templates for [CubeCoders AMP](https://cubecoders.com/AMP).
 
-Die Vorlage ist bewusst schlank: eine Anwendung, keine unnötigen Ports und keine Zugangsdaten im Repository.
+## GitHub Actions Runner
 
-## Was funktioniert – und was noch nicht?
+Run a self-hosted GitHub Actions runner on a Linux server and manage its process through AMP.
 
-AMP kann mit der Vorlage den offiziellen Linux-x64-Runner herunterladen und den Runner-Prozess starten bzw. stoppen. Die GitHub-Registrierung muss ich **einmalig per SSH** durchführen. Eine automatische Registrierung über die AMP-Oberfläche ist noch nicht umgesetzt.
+This template targets Linux x86-64 and AMP 2.8.0.4 or newer. It uses the official [GitHub Actions runner](https://github.com/actions/runner).
 
-**Stand:** erste, noch nicht auf AMP 2.8.0.4 getestete Version. Bitte nicht als fertig getestete Installation verstehen. Der Download ist zunächst auf die geprüfte Release-Dateibezeichnung **v2.338.2** festgelegt; ein späteres Update erfordert eine Anpassung der Vorlage. Der direkte Prozessstart verwendet bewusst die ausführbare Datei `bin/Runner.Listener` statt eines Shellskripts; das automatische Neustartverhalten des offiziellen `run.sh` wird dabei nicht vollständig nachgebildet.
+### Installation
 
-## In AMP hinzufügen
+1. In AMP, open **Configuration → Instance Deployment → Configuration Repositories**.
+2. Add `BlueIceWolf/AMPTemplates:main` and select **Fetch Latest**.
+3. Create an instance using the **GitHub Actions Runner** template.
+4. Run **Update** in the instance to download the runner.
+5. Register the runner with GitHub before starting it.
 
-1. **Configuration → Instance Deployment → Configuration Repositories** öffnen.
-2. Als Repository **`BlueIceWolf/AMPTemplates:main`** eintragen.
-3. **Fetch Latest** ausführen.
-4. Unter **Create New Instance** nach **GitHub Actions Runner** suchen.
-5. Eine Instanz erstellen und zunächst **nicht starten**.
-6. In dieser Instanz über AMP einmal **Update** ausführen. Dadurch wird das Runner-Paket heruntergeladen.
+### GitHub registration
 
-## Einmalig mit GitHub verbinden
+Open **Settings → Actions → Runners → New self-hosted runner** in the GitHub repository where you want to run jobs.
 
-Im Repository auf GitHub **Settings → Actions → Runners → New self-hosted runner** öffnen. Dort bekomme ich die richtige GitHub-URL und einen **kurzlebigen Registrierungstoken**.
-
-Die Registrierungsbefehle führe ich als Benutzer aus, dem die AMP-Instanzdateien gehören – **nicht als root** – und zwar direkt im Verzeichnis mit `config.sh` und `bin/`. Beispiel:
+Run the registration command as the user that owns the AMP instance files, from the directory containing `config.sh`:
 
 ```bash
-./config.sh --url https://github.com/MEIN-BENUTZER/MEIN-REPO --token EINMAL-TOKEN --unattended --name amp-runner-01 --labels amp,debian12
+./config.sh --url https://github.com/OWNER/REPOSITORY --token YOUR_REGISTRATION_TOKEN --unattended --name amp-runner-01
 ```
 
-Das Beispiel ist **kein vollständiger Befehl zum Kopieren**: URL, Token, Runner-Name und das richtige Arbeitsverzeichnis müssen angepasst werden. Eine Repository-Registrierung gilt nur für das gewählte Repository. Für die Nutzung in mehreren Repositories kann stattdessen ein Runner auf Organisationsebene eingerichtet werden.
+Replace the URL and token with the values provided by GitHub. Do not run the configuration as root or commit tokens to this repository.
 
-**Wichtig:** Ein Runner verarbeitet normalerweise einen Job gleichzeitig. Mehrere parallele Jobs brauchen mehrere Runner-Instanzen.
+After registration, start the instance in AMP. The runner should appear under **Settings → Actions → Runners** in GitHub.
 
-## Sicherheit
+To target it from a workflow:
 
-Ich betreibe GitHub-Runner möglichst **isoliert** und gebe ihnen keinen direkten Zugriff auf AMP, Gameserver, Docker-Socket oder produktive Dienste. Besonders bei öffentlichen Repositories können Workflows fremden Code ausführen. Ich speichere weder Tokens noch Passwörter in dieser Vorlage. Für Docker-Builds ist eine separat abgesicherte Build-Umgebung notwendig.
+```yaml
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+```
 
-## Technische Grundlage
+### Current limitations
 
-- CubeCoders AMP, Generic Module, mindestens 2.8.0.4
-- Linux x86-64, ausgelegt für Debian 12
-- Offizieller [GitHub Actions Runner](https://github.com/actions/runner)
-- [Vorlagenaufbau von CubeCoders](https://github.com/CubeCoders/AMPTemplates)
+This is an initial template and has **not yet been validated on a live AMP instance**.
 
-Die Vorlage nutzt keine eingehenden Netzwerkports. Der Runner verbindet sich selbst ausgehend mit GitHub über HTTPS.
+- Registration is manual; AMP does not configure GitHub access automatically.
+- The download is pinned to runner v2.338.2.
+- The runner is started through `bin/Runner.Listener` rather than the official `run.sh` wrapper, so its update/restart behavior may differ.
+- Docker-based workflows require a separate, properly isolated build environment.
+
+### Security
+
+Runner jobs execute repository workflow code. Use an isolated instance with only the permissions it needs, especially for public repositories and pull requests from untrusted contributors. Do not expose the AMP host, game-server data, secrets, or the host Docker socket to untrusted jobs.
+
+For the supported configuration format, see the [official AMPTemplates repository](https://github.com/CubeCoders/AMPTemplates).
