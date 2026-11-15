@@ -1,6 +1,6 @@
 [
   {
-    "UpdateStageName": "Offiziellen GitHub-Runner herunterladen",
+    "UpdateStageName": "Download GitHub Actions Runner",
     "UpdateSourcePlatform": "Linux",
     "UpdateSource": "GithubRelease",
     "UpdateSourceArgs": "actions/runner",
@@ -10,6 +10,14 @@
     "UnzipUpdateSource": true,
     "OverwriteExistingFiles": true,
     "DeleteAfterExtract": true,
+    "SkipOnFailure": false
+  },
+  {
+    "UpdateStageName": "Register runner with GitHub",
+    "UpdateSourcePlatform": "Linux",
+    "UpdateSource": "Executable",
+    "UpdateSourceData": "/bin/bash",
+    "UpdateSourceArgs": "-c 'set -eu; cd \"$1\"; if [ -f .runner ]; then echo \"Runner already registered\"; exit 0; fi; if [ -z \"$2\" ] || [ -z \"$3\" ]; then echo \"Set GitHub URL and registration token in AMP settings, then run Update again\"; exit 1; fi; if [ ! -x ./config.sh ]; then chmod +x ./config.sh; fi; ./config.sh --unattended --replace --url \"$2\" --token \"$3\" --name \"$4\" --labels \"$5\";' _ '{{$FullBaseDir}}' '{{RunnerURL}}' '{{RunnerToken}}' '{{RunnerName}}' '{{RunnerLabels}}'",
     "SkipOnFailure": false
   }
 ]
